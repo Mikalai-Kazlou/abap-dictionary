@@ -469,7 +469,7 @@ DATA(result) = xsdbool( is_filled  = abap_true AND
 ### Отладка под другим пользователем
 1.	Пользователь, который совершает отладку, должен установить точку останова под другим пользователем.
    
-    ![External user debugging](/assets/images/ext-user-debugging.png)
+    ![External user debugging](../assets/images/ext-user-debugging.png)
 
 2.	Пользователь, под которым происходит отладка, запускает команду ``` /hext user = EXTUSERNAME ```.
 
