@@ -7,6 +7,7 @@ CALL METHOD cl_rsdme_error=>display_log
   EXPORTING
     i_t_return = lt_return.
 ```
+
 ### Работа с фронтэндом
 ```
 CLASS cl_gui_frontend_services DEFINITION LOAD.
@@ -18,13 +19,15 @@ CLASS cl_gui_frontend_services DEFINITION LOAD.
       error_no_gui = 2
       OTHERS       = 3.
 ```
+
 ### Работа с ZIP-архивами
 Класс: ```CL_ABAP_ZIP```
+
 ### Утилиты для HTTP
 Класс: ```CL_HTTP_UTILITY```
+
 ### Строковые переменные
 ``` CL_ABAP_CHAR_UTILITIES=>CR_LF ```
-
 ```
 DATA: lv_c_nbcp TYPE c. 
 lv_c_nbsp = cl_abap_conv_in_ce=>uccp( '00A0' ). “неразрывный пробел
@@ -37,16 +40,20 @@ IF cl_abap_matcher=>matches( pattern = '\d{23}'
           INTO l_string SEPARATED BY  gc_sep_dat.
 ENDIF.
 ```
+
 ### Красивый вывод сообщений
 ```
 CALL FUNCTION 'C14Z_MESSAGES_SHOW_AS_POPUP'
       TABLES
         i_message_tab = gt_messages.
 ```
+
 ### Чтение данных из документа Excel
 ФМ ```ALSM_EXCEL_TO_INTERNAL_TABLE```
+
 ### Конвертация между XSTRING и BINARY и пр.
 Группа функций ```SCMS_CONV```
+
 ### Получение метаданных
 ```
 *&---------------------------------------------------------------------*
@@ -113,6 +120,7 @@ FORM get_text_from_domain
   ENDIF.
 ENDFORM.
 ```
+
 ### Перевод сумм во внутреннее представление
 ```
 CALL FUNCTION 'BAPI_CURRENCY_CONV_TO_INTERN_9'
@@ -123,8 +131,10 @@ CALL FUNCTION 'BAPI_CURRENCY_CONV_TO_INTERN_9'
   IMPORTING
     amount_internal      = ls_rest_partners-cn_amount.
 ```
+
 ### Работа с курсами валют
-http://www.sapnet.ru/viewtopic.php?t=103&highlight=currency+rate
+[Link](http://www.sapnet.ru/viewtopic.php?t=103&highlight=currency+rate)
+
 ### Запуск транзакции через ФМ
 ```
 CALL FUNCTION 'ABAP4_CALL_TRANSACTION'
@@ -138,13 +148,15 @@ CALL FUNCTION 'ABAP4_CALL_TRANSACTION'
     tcode_invalid           = 2
     OTHERS                  = 3.
 ```
+
 ### Генерация случайных чисел
 ```
 DATA(lo_rand)  = cl_abap_random=>create( seed = cl_abap_random=>seed( ) ).
 DATA(lv_value) = lo_rand->intinrange( low = 1 high = 10 ).
 ```
+
 ### Регулярные выражения
-http://abap4.ru/regular-expression.html
+[Link](http://abap4.ru/regular-expression.html)
 ```
 IF cl_abap_matcher=>matches( pattern = '\d{23}'
                                 text = l_string ) = abap_true.
@@ -153,6 +165,7 @@ IF cl_abap_matcher=>matches( pattern = '\d{23}'
                  l_string+13 l_string SEPARATED BY gc_sep_dat.
 ENDIF.
 ```
+
 ### ADBC и Native SQL
 ```
 TRY.
@@ -175,6 +188,7 @@ TRY.
     MESSAGE lv_text TYPE 'S' DISPLAY LIKE 'E'.
 ENDTRY.
 ```
+
 ### Работа с HASH-значением
 Function group: ```SECH```
 
@@ -215,6 +229,7 @@ CALL FUNCTION 'TSTR_CALC_TIME'
     unspecified_error        = 7
     OTHERS                   = 8.
 ```
+
 ### Последний день месяца
 ```
 CALL FUNCTION 'DATE_GET_MONTH_LASTDAY'
@@ -223,6 +238,7 @@ CALL FUNCTION 'DATE_GET_MONTH_LASTDAY'
     IMPORTING
       e_date = lv_date.
 ```
+
 ### Работа с timestamp
 ```
 GET TIME STAMP FIELD DATA(lv_ts).
@@ -237,6 +253,7 @@ cl_abap_tstmp=>systemtstmp_syst2utc(
 
 CONVERT TIME STAMP lv_timestamp TIME ZONE 'UTC' INTO DATE DATA(lv_date) TIME DATA(lv_time).
 ```
+
 ### Классы для работы с датами
 - ```CL_RECA_DATE```
 - ```CL_RECA_DATE_SLICES```
@@ -245,6 +262,7 @@ CONVERT TIME STAMP lv_timestamp TIME ZONE 'UTC' INTO DATE DATA(lv_date) TIME DAT
 ### Чтение / запись данных с экрана
 - ```DYNP_VALUES_READ```
 - ```DYNP_VALUES_UPDATE```
+
 ### F4 для поля из таблицы
 ```
 CALL FUNCTION 'F4IF_FIELD_VALUE_REQUEST'
@@ -260,6 +278,7 @@ CALL FUNCTION 'F4IF_FIELD_VALUE_REQUEST'
       no_values_found   = 4
       OTHERS            = 5.
 ```
+
 ### Установить свой список значений для ListBox
 ```
 DATA: lt_vrm_values TYPE vrm_values,
@@ -285,6 +304,7 @@ CALL FUNCTION 'VRM_SET_VALUES'
 # ALV
 ### Разворачивание ALV на полный экран
 Программа ```ZDF_FIND_CARD_999011```, ```FORM init_alv```
+
 ### Простой вывод в ALV (1)
 ```
 DATA: lr_alv TYPE REF TO cl_salv_table,
@@ -298,6 +318,7 @@ lr_functions->set_all( ).
 
 lr_alv->display( ).
 ```
+
 ### Простой вывод в ALV (2)
 ```
 DATA(lo_ida) = cl_salv_gui_table_ida=>create( iv_table_name = 'ZTVLT_CRDNTL' ).
@@ -308,6 +329,7 @@ lo_ida->field_catalog( )->set_available_fields( lt_fc ).
 
 lo_ida->fullscreen( )->display( ).
 ```
+
 ### Сброс буфера ALV-таблиц для всех системы
 Программа ```BALVBUFDEL```
 
@@ -342,6 +364,7 @@ LOOP AT lt_data INTO DATA(ls_data)
     ENDLOOP.
 ENDLOOP.
 ```
+
 ### Добавление строк в таблицу
 ```
 ls_cdata = CORRESPONDING #( BASE ( ls_cdata ) <lfs_contract> 
@@ -351,10 +374,12 @@ ls_cdata = CORRESPONDING #( BASE ( ls_cdata ) <lfs_contract>
 
 lt_custcontr = CORRESPONDING #( BASE ( lt_vendcontr ) lt_cdata ).
 ```
+
 ### Простое alpha-преобразование
 ```
 lv_kunnr = |{ gs_debitor-kunnr ALPHA = OUT }|.
 ```
+
 ### Работа с циклом FOR
 ```
 gt_output = VALUE #( FOR <ls_initial_data> IN gt_initial_data ( fill_line( <ls_initial_data> ) ) ) .
@@ -366,12 +391,14 @@ DATA(ltr_matnr) = VALUE range_t_matnr( FOR <ls_bom_preview> IN lt_bom_preview_ta
 
 DATA(lt_mseg_anla2) = VALUE ty_mseg( FOR ls_mseg IN gt_mseg WHERE ( anln1 IS NOT INITIAL ) ( ls_mseg ) ).
 ```
+
 ### Проверка наличия значения в таблице
 ```
 IF line_exists( lt_dfs_filedata[ doctype = gc_doctype_51 ] ).
   CONTINUE.
 ENDIF.
 ```
+
 ### Условие
 ```
 <ls_data>-new_site = COND #( WHEN <ls_data>-cn_beg_date >= s_repdat-low THEN abap_true
@@ -386,12 +413,14 @@ DATA(addrnumber) = SWITCH #( <ls_data>-zzre_obj_one_sid
                       WHEN 3 THEN <ls_data>-addrnumber3
                       ELSE '' ).
 ```
+
 ### Расчет суммы по колонке таблицы
 ```
 DATA: itab TYPE TABLE OF i WITH EMPTY KEY.
 itab = VALUE #( FOR j = 1 WHILE j <= 10 ( j ) ).
 DATA(sum) = REDUCE i( INIT x = 0 FOR wa IN itab NEXT x = x + wa ).
 ```
+
 ### Создание булевой переменной
 ```
 DATA(result) = xsdbool( is_filled  = abap_true AND
@@ -401,14 +430,18 @@ DATA(result) = xsdbool( is_filled  = abap_true AND
 # Прочее
 ### ABAP DEMO package
 ```SABAPDEMOS```
+
 ### ABAP Git
 ```ZABAPGIT_STANDALONE```
+
 ### FICO common packages
 - ```ZFICO_BC```
 - ```ZLIB```
+
 ### Редактирование таблиц в продуктиве
 - ```ZRK_SE16N``` – редактирование таблиц в продуктиве
 - ```SE37``` - FM ```SE16N_INTERFACE```
+
 ### Печатные формы OAER, ZOAER
 Функциональный модуль: ```Z_OUT_DOT```, ```Z_OUT_XLS```
 
@@ -425,20 +458,25 @@ DATA(result) = xsdbool( is_filled  = abap_true AND
 Транзакция редактирования: ```OAER```
 
 Создание нового класса: тр. ```SBDSV1```
+
 ### Поиск во всех текстах
 - Программа ```RS_ABAP_SOURCE_SCAN```
 - Транзакция ```CODE_SCANNER```
+
 ### Отладка фоновых заданий
 ```jdbg```
+
 ### Отладка под другим пользователем
 1.	Пользователь, который совершает отладку, должен установить точку останова под другим пользователем.
    
     ![External user debugging](/assets/images/ext-user-debugging.png)
 
 2.	Пользователь, под которым происходит отладка, запускает команду ```/hext user = EXTUSERNAME```.
+
 ### Создание системных вариантов
 - ```CUS&``` - пользовательские транзакции
 - ```SAP&``` - страндартные транзакции
+
 ### Работа с командами операционной системы
 Создание команды – тр. ```SM69```
 ```
@@ -479,12 +517,15 @@ LOOP AT lt_protocol ASSIGNING FIELD-SYMBOL(<ls_protocol>).
   WRITE <ls_protocol>.
 ENDLOOP.
 ```
+
 ### Добавление EXTENSION в ФМ BAPI_ACC_DOCUMENT_POST
 FIBF – Параметры настройки – Модули процесса клиента
 
 Процесс ```RWBAPI01```
+
 ### Массовая активация CDS
 Program ```RUTDDLSACT```
+
 ### Массовая проверка синтаксиса
 T-code ```REDSRS01```
 
