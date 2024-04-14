@@ -1,1 +1,1 @@
-# [Common dictionary](/common-dictionary.md)
+# [Common dictionary](/docs/common-dictionary.md)
