@@ -21,10 +21,10 @@ CLASS cl_gui_frontend_services DEFINITION LOAD.
 ```
 
 ### Работа с ZIP-архивами
-Класс: ```CL_ABAP_ZIP```
+Класс: ``` CL_ABAP_ZIP ```
 
 ### Утилиты для HTTP
-Класс: ```CL_HTTP_UTILITY```
+Класс: ``` CL_HTTP_UTILITY ```
 
 ### Строковые переменные
 ``` CL_ABAP_CHAR_UTILITIES=>CR_LF ```
@@ -49,10 +49,10 @@ CALL FUNCTION 'C14Z_MESSAGES_SHOW_AS_POPUP'
 ```
 
 ### Чтение данных из документа Excel
-ФМ ```ALSM_EXCEL_TO_INTERNAL_TABLE```
+ФМ ``` ALSM_EXCEL_TO_INTERNAL_TABLE ```
 
 ### Конвертация между XSTRING и BINARY и пр.
-Группа функций ```SCMS_CONV```
+Группа функций ``` SCMS_CONV ```
 
 ### Получение метаданных
 ```
@@ -190,23 +190,23 @@ ENDTRY.
 ```
 
 ### Работа с HASH-значением
-Function group: ```SECH```
+Function group: ``` SECH ```
 
 # Работа с Excel
-OLE: ```zcl_edms_xls_epam_fi```, пример использования ```ZFICO_DOCS_UPLOAD_F01```, ```upload_excel_file```.
+OLE: ``` zcl_edms_xls_epam_fi ```, пример использования ``` ZFICO_DOCS_UPLOAD_F01 ```, ``` upload_excel_file ```.
 Минус: требует компьютер пользователя с Windows, могут быть проблемы при запуске из web
 Особенность: работает только с тем, что видно на экране
 
-Фон: ```zcl_fc_excel_reader```, пример использования: ```ZCL_EDMS_MASS_EPAM_FI_MULTI=>PARSE_INTERNAL()```.
+Фон: ``` zcl_fc_excel_reader ```, пример использования: ``` ZCL_EDMS_MASS_EPAM_FI_MULTI=>PARSE_INTERNAL() ```.
 Плюсы: можно работать в фоне, с несколькими вкладками
 Минусы: не работает с xls-форматом (старый), не позволяет определить активную вкладку, считывает всю вкладку, вне зависимости от наличия скрытых строк.
 
-Ещё есть ```cl_xlsx_document```, но я в ней не разобрался, нет времени.
-Пример попытки: ```ZCL_FC_EXCEL_READER=>PREPARE```, закомментированные строки 22-30.
+Ещё есть ``` cl_xlsx_document ```, но я в ней не разобрался, нет времени.
+Пример попытки: ``` ZCL_FC_EXCEL_READER=>PREPARE ```, закомментированные строки 22-30.
 
-Есть ещё abap2xls: пакет ```ZABAP2XLSX```.
+Есть ещё abap2xls: пакет ``` ZABAP2XLSX ```.
 На сапборде есть xslx worbench Бородина и zwww (через олей) Parazit'а. И что-то ещё, нужно рыться.
-Ещё есть iXML, вроде бы можно заюзать совместно с ```zcl_zip``` (или как его там).
+Ещё есть iXML, вроде бы можно заюзать совместно с ``` zcl_zip ``` (или как его там).
 
 # Дата / время
 ### Прибавить количество секунд к дате и времени
@@ -255,13 +255,13 @@ CONVERT TIME STAMP lv_timestamp TIME ZONE 'UTC' INTO DATE DATA(lv_date) TIME DAT
 ```
 
 ### Классы для работы с датами
-- ```CL_RECA_DATE```
-- ```CL_RECA_DATE_SLICES```
+- ``` CL_RECA_DATE ```
+- ``` CL_RECA_DATE_SLICES ```
 
 # Экраны
 ### Чтение / запись данных с экрана
-- ```DYNP_VALUES_READ```
-- ```DYNP_VALUES_UPDATE```
+- ``` DYNP_VALUES_READ ```
+- ``` DYNP_VALUES_UPDATE ```
 
 ### F4 для поля из таблицы
 ```
@@ -303,7 +303,7 @@ CALL FUNCTION 'VRM_SET_VALUES'
 
 # ALV
 ### Разворачивание ALV на полный экран
-Программа ```ZDF_FIND_CARD_999011```, ```FORM init_alv```
+Программа ``` ZDF_FIND_CARD_999011 ```, ``` FORM init_alv ```
 
 ### Простой вывод в ALV (1)
 ```
@@ -331,7 +331,7 @@ lo_ida->fullscreen( )->display( ).
 ```
 
 ### Сброс буфера ALV-таблиц для всех системы
-Программа ```BALVBUFDEL```
+Программа ``` BALVBUFDEL ```
 
 # Классы
 ### Вызов исключений
@@ -435,50 +435,50 @@ DATA(result) = xsdbool( is_filled  = abap_true AND
 ``` ZABAPGIT_STANDALONE ```
 
 ### FICO common packages
-- ```ZFICO_BC```
-- ```ZLIB```
+- ``` ZFICO_BC ```
+- ``` ZLIB ```
 
 ### Редактирование таблиц в продуктиве
-- ```ZRK_SE16N``` – редактирование таблиц в продуктиве
-- ```SE37``` - FM ```SE16N_INTERFACE```
+- ``` ZRK_SE16N ``` – редактирование таблиц в продуктиве
+- ``` SE37 ``` - FM ``` SE16N_INTERFACE ```
 
 ### Печатные формы OAER, ZOAER
-Функциональный модуль: ```Z_OUT_DOT```, ```Z_OUT_XLS```
+Функциональный модуль: ``` Z_OUT_DOT ```, ``` Z_OUT_XLS ```
 
-- Приложение: ```kappl```
-- Документ:   ```kschl```
+- Приложение: ``` kappl ```
+- Документ:   ``` kschl ```
 
-Транзакция редактирования: ```ZOAER```
+Транзакция редактирования: ``` ZOAER ```
 
-Транзакция создания видов выходных документов: ```NACT``` (```NACE```)
-- Имя класса: ```classname```
-- Тип класса: ```classtype```
-- Ключ объекта: ```object_key```
+Транзакция создания видов выходных документов: ``` NACT ``` (``` NACE ```)
+- Имя класса: ``` classname ```
+- Тип класса: ``` classtype ```
+- Ключ объекта: ``` object_key ```
 
-Транзакция редактирования: ```OAER```
+Транзакция редактирования: ``` OAER ```
 
-Создание нового класса: тр. ```SBDSV1```
+Создание нового класса: тр. ``` SBDSV1 ```
 
 ### Поиск во всех текстах
-- Программа ```RS_ABAP_SOURCE_SCAN```
-- Транзакция ```CODE_SCANNER```
+- Программа ``` RS_ABAP_SOURCE_SCAN ```
+- Транзакция ``` CODE_SCANNER ```
 
 ### Отладка фоновых заданий
-```jdbg```
+``` jdbg ```
 
 ### Отладка под другим пользователем
 1.	Пользователь, который совершает отладку, должен установить точку останова под другим пользователем.
    
     ![External user debugging](/assets/images/ext-user-debugging.png)
 
-2.	Пользователь, под которым происходит отладка, запускает команду ```/hext user = EXTUSERNAME```.
+2.	Пользователь, под которым происходит отладка, запускает команду ``` /hext user = EXTUSERNAME ```.
 
 ### Создание системных вариантов
-- ```CUS&``` - пользовательские транзакции
-- ```SAP&``` - страндартные транзакции
+- ``` CUS& ``` - пользовательские транзакции
+- ``` SAP& ``` - страндартные транзакции
 
 ### Работа с командами операционной системы
-Создание команды – тр. ```SM69```
+Создание команды – тр. ``` SM69 ```
 ```
 CALL 'C_SAPGPARAM' ID 'NAME'  FIELD 'SAPDBHOST'
                    ID 'VALUE' FIELD  lv_param.
@@ -521,17 +521,17 @@ ENDLOOP.
 ### Добавление EXTENSION в ФМ BAPI_ACC_DOCUMENT_POST
 FIBF – Параметры настройки – Модули процесса клиента
 
-Процесс ```RWBAPI01```
+Процесс ``` RWBAPI01 ```
 
 ### Массовая активация CDS
-Program ```RUTDDLSACT```
+Program ``` RUTDDLSACT ```
 
 ### Массовая проверка синтаксиса
-T-code ```REDSRS01```
+T-code ``` REDSRS01 ```
 
 # OData
 Преобразование Filter string в select-options
-```CL_CLB2_TOOLS=>ODATA_FILTER2SELECT_OPTION```
+``` CL_CLB2_TOOLS=>ODATA_FILTER2SELECT_OPTION ```
 
 Преобразование select-options в WHERE-condition
 ```
@@ -543,4 +543,4 @@ CALL FUNCTION 'SE16N_CREATE_SELTAB'
 
 # UI5
 ### Загрузка / выгрузка репозитория
-Program ```/UI5/UI5_REPOSITORY_LOAD```
+Program ``` /UI5/UI5_REPOSITORY_LOAD ```
