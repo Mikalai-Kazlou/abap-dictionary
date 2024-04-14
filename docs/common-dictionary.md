@@ -23,7 +23,8 @@ CLASS cl_gui_frontend_services DEFINITION LOAD.
 ### Утилиты для HTTP
 Класс: ```CL_HTTP_UTILITY```
 ### Строковые переменные
-```CL_ABAP_CHAR_UTILITIES=>CR_LF```
+``` CL_ABAP_CHAR_UTILITIES=>CR_LF ```
+
 ```
 DATA: lv_c_nbcp TYPE c. 
 lv_c_nbsp = cl_abap_conv_in_ce=>uccp( '00A0' ). “неразрывный пробел
