@@ -133,7 +133,7 @@ CALL FUNCTION 'BAPI_CURRENCY_CONV_TO_INTERN_9'
 ```
 
 ### Работа с курсами валют
-http://www.sapnet.ru/viewtopic.php?t=103&highlight=currency+rate
+[Link](http://www.sapnet.ru/viewtopic.php?t=103&highlight=currency+rate)
 
 ### Запуск транзакции через ФМ
 ```
@@ -156,7 +156,7 @@ DATA(lv_value) = lo_rand->intinrange( low = 1 high = 10 ).
 ```
 
 ### Регулярные выражения
-http://abap4.ru/regular-expression.html
+[Link](http://abap4.ru/regular-expression.html)
 ```
 IF cl_abap_matcher=>matches( pattern = '\d{23}'
                                 text = l_string ) = abap_true.
