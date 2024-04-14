@@ -429,10 +429,10 @@ DATA(result) = xsdbool( is_filled  = abap_true AND
 
 # Прочее
 ### ABAP DEMO package
-```SABAPDEMOS```
+``` SABAPDEMOS ```
 
 ### ABAP Git
-```ZABAPGIT_STANDALONE```
+``` ZABAPGIT_STANDALONE ```
 
 ### FICO common packages
 - ```ZFICO_BC```
