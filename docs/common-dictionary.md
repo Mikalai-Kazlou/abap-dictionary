@@ -165,6 +165,90 @@ IF cl_abap_matcher=>matches( pattern = '\d{23}'
                  l_string+13 l_string SEPARATED BY gc_sep_dat.
 ENDIF.
 ```
+```
+METHOD convert_filter_string.
+  DATA: lv_pcre  TYPE string,
+        lv_field TYPE string.
+
+  rv_filter_string = iv_filter_string.
+
+  " substringof ( 'VALUE' , FIELD ) --> FIELD like '%VALUE%'
+  REPLACE ALL OCCURRENCES OF PCRE `(substringof\s*\(\s*)'(.*?)'\s*,\s*(\S*)\s*\)`
+                               IN rv_filter_string
+                             WITH `$3 like '%$2%'`
+                             IGNORING CASE ##NO_TEXT.
+
+  " startswith ( FIELD, 'VALUE' ) --> FIELD like 'VALUE%'
+  REPLACE ALL OCCURRENCES OF PCRE `(startswith\s*\(\s*)(\S*)\s*,\s*'(.*?)'\s*\)`
+                               IN rv_filter_string
+                             WITH `$2 like '$3%'`
+                             IGNORING CASE ##NO_TEXT.
+
+  " endswith ( FIELD, 'VALUE' ) --> FIELD like '%VALUE'
+  REPLACE ALL OCCURRENCES OF PCRE `(endswith\s*\(\s*)(\S*)\s*,\s*'(.*?)'\s*\)`
+                               IN rv_filter_string
+                             WITH `$2 like '%$3'`
+                             IGNORING CASE ##NO_TEXT.
+
+  " eq null --> is null
+  REPLACE ALL OCCURRENCES OF PCRE `eq\s*null`
+                               IN rv_filter_string
+                             WITH `is null`
+                             IGNORING CASE ##NO_TEXT.
+
+  " ne null --> is not null
+  REPLACE ALL OCCURRENCES OF PCRE `ne\s*null`
+                               IN rv_filter_string
+                             WITH `is not null`
+                             IGNORING CASE ##NO_TEXT.
+
+  LOOP AT it_fields_date INTO lv_field.
+    IF lv_field IS NOT INITIAL.
+      " DateField is null --> ( DateField is null ) or ( DateField eq '00000000' )
+      lv_pcre = `(` && lv_field && `)\s*is\s*null`.
+      REPLACE ALL OCCURRENCES OF PCRE lv_pcre
+                                   IN rv_filter_string
+                                 WITH `( $1 is null ) or ( $1 eq '00000000' )`
+                                 IGNORING CASE ##NO_TEXT.
+
+      " DateField is not null --> ( DateField is not null ) and ( DateField ne '00000000' )
+      lv_pcre = `(` && lv_field && `)\s*is\s*not\s*null`.
+      REPLACE ALL OCCURRENCES OF PCRE lv_pcre
+                                   IN rv_filter_string
+                                 WITH `( $1 is not null ) and ( $1 ne '00000000' )`
+                                 IGNORING CASE ##NO_TEXT.
+    ENDIF.
+  ENDLOOP.
+
+  " AlphaField eq '12345' --> AlphaField eq '0000012345'
+  LOOP AT it_fields_alpha INTO DATA(ls_alpha).
+    DATA(lv_offset) = 0.
+    DATA(lv_length) = 0.
+
+    lv_pcre = |({ ls_alpha-field }.*?)'(.*?)'|.
+
+    DO.
+      FIND FIRST OCCURRENCE OF PCRE lv_pcre
+                                 IN SECTION OFFSET lv_offset OF rv_filter_string
+                         SUBMATCHES DATA(lv_sub1) DATA(lv_sub2)
+                              MATCH OFFSET lv_offset
+                           IGNORING CASE.
+      IF sy-subrc <> 0.
+        EXIT.
+      ENDIF.
+
+      DATA(lv_with) = |$1'{ condense( |{ lv_sub2 ALPHA = IN WIDTH = ls_alpha-width }| ) }'|.
+
+      REPLACE FIRST OCCURRENCE OF PCRE lv_pcre
+                                    IN SECTION OFFSET lv_offset OF rv_filter_string
+                                  WITH lv_with
+                           REPLACEMENT LENGTH lv_length
+                              IGNORING CASE.
+      lv_offset += lv_length.
+    ENDDO.
+  ENDLOOP.
+ENDMETHOD.
+```
 
 ### ADBC и Native SQL
 ```
