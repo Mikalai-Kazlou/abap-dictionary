@@ -1,6 +1,6 @@
 # Полезные ФМ, группы функций, классы
 ### Отображение BAL-лога
-```
+```abap
 DATA: lt_return TYPE bapiret2_t.
 
 CALL METHOD cl_rsdme_error=>display_log
@@ -9,7 +9,7 @@ CALL METHOD cl_rsdme_error=>display_log
 ```
 
 ### Работа с фронтэндом
-```
+```abap
 CLASS cl_gui_frontend_services DEFINITION LOAD.
   CALL METHOD cl_gui_frontend_services=>get_temp_directory
     CHANGING
@@ -21,14 +21,14 @@ CLASS cl_gui_frontend_services DEFINITION LOAD.
 ```
 
 ### Работа с ZIP-архивами
-Класс: ``` CL_ABAP_ZIP ```
+Класс: `CL_ABAP_ZIP`
 
 ### Утилиты для HTTP
-Класс: ``` CL_HTTP_UTILITY ```
+Класс: `CL_HTTP_UTILITY`
 
 ### Строковые переменные
-``` CL_ABAP_CHAR_UTILITIES=>CR_LF ```
-```
+`CL_ABAP_CHAR_UTILITIES=>CR_LF`
+```abap
 DATA: lv_c_nbcp TYPE c. 
 lv_c_nbsp = cl_abap_conv_in_ce=>uccp( '00A0' ). “неразрывный пробел
 
@@ -42,20 +42,20 @@ ENDIF.
 ```
 
 ### Красивый вывод сообщений
-```
+```abap
 CALL FUNCTION 'C14Z_MESSAGES_SHOW_AS_POPUP'
       TABLES
         i_message_tab = gt_messages.
 ```
 
 ### Чтение данных из документа Excel
-ФМ ``` ALSM_EXCEL_TO_INTERNAL_TABLE ```
+ФМ `ALSM_EXCEL_TO_INTERNAL_TABLE`
 
 ### Конвертация между XSTRING и BINARY и пр.
-Группа функций ``` SCMS_CONV ```
+Группа функций `SCMS_CONV`
 
 ### Получение метаданных
-```
+```abap
 *&---------------------------------------------------------------------*
 *&      Form  get_text_from_domain
 *&---------------------------------------------------------------------*
@@ -122,7 +122,7 @@ ENDFORM.
 ```
 
 ### Перевод сумм во внутреннее представление
-```
+```abap
 CALL FUNCTION 'BAPI_CURRENCY_CONV_TO_INTERN_9'
   EXPORTING
     currency             = ls_rest_partners-cn_waers
@@ -136,7 +136,7 @@ CALL FUNCTION 'BAPI_CURRENCY_CONV_TO_INTERN_9'
 [Link](http://www.sapnet.ru/viewtopic.php?t=103&highlight=currency+rate)
 
 ### Запуск транзакции через ФМ
-```
+```abap
 CALL FUNCTION 'ABAP4_CALL_TRANSACTION'
   EXPORTING
     tcode                   = ev_tcode
@@ -150,14 +150,14 @@ CALL FUNCTION 'ABAP4_CALL_TRANSACTION'
 ```
 
 ### Генерация случайных чисел
-```
+```abap
 DATA(lo_rand)  = cl_abap_random=>create( seed = cl_abap_random=>seed( ) ).
 DATA(lv_value) = lo_rand->intinrange( low = 1 high = 10 ).
 ```
 
 ### Регулярные выражения
 [Link](http://abap4.ru/regular-expression.html)
-```
+```abap
 IF cl_abap_matcher=>matches( pattern = '\d{23}'
                                 text = l_string ) = abap_true.
      CONCATENATE l_string+0(9)
@@ -165,9 +165,93 @@ IF cl_abap_matcher=>matches( pattern = '\d{23}'
                  l_string+13 l_string SEPARATED BY gc_sep_dat.
 ENDIF.
 ```
+```abap
+METHOD convert_filter_string.
+  DATA: lv_pcre  TYPE string,
+        lv_field TYPE string.
+
+  rv_filter_string = iv_filter_string.
+
+  " substringof ( 'VALUE' , FIELD ) --> FIELD like '%VALUE%'
+  REPLACE ALL OCCURRENCES OF PCRE `(substringof\s*\(\s*)'(.*?)'\s*,\s*(\S*)\s*\)`
+                               IN rv_filter_string
+                             WITH `$3 like '%$2%'`
+                             IGNORING CASE ##NO_TEXT.
+
+  " startswith ( FIELD, 'VALUE' ) --> FIELD like 'VALUE%'
+  REPLACE ALL OCCURRENCES OF PCRE `(startswith\s*\(\s*)(\S*)\s*,\s*'(.*?)'\s*\)`
+                               IN rv_filter_string
+                             WITH `$2 like '$3%'`
+                             IGNORING CASE ##NO_TEXT.
+
+  " endswith ( FIELD, 'VALUE' ) --> FIELD like '%VALUE'
+  REPLACE ALL OCCURRENCES OF PCRE `(endswith\s*\(\s*)(\S*)\s*,\s*'(.*?)'\s*\)`
+                               IN rv_filter_string
+                             WITH `$2 like '%$3'`
+                             IGNORING CASE ##NO_TEXT.
+
+  " eq null --> is null
+  REPLACE ALL OCCURRENCES OF PCRE `eq\s*null`
+                               IN rv_filter_string
+                             WITH `is null`
+                             IGNORING CASE ##NO_TEXT.
+
+  " ne null --> is not null
+  REPLACE ALL OCCURRENCES OF PCRE `ne\s*null`
+                               IN rv_filter_string
+                             WITH `is not null`
+                             IGNORING CASE ##NO_TEXT.
+
+  LOOP AT it_fields_date INTO lv_field.
+    IF lv_field IS NOT INITIAL.
+      " DateField is null --> ( DateField is null ) or ( DateField eq '00000000' )
+      lv_pcre = `(` && lv_field && `)\s*is\s*null`.
+      REPLACE ALL OCCURRENCES OF PCRE lv_pcre
+                                   IN rv_filter_string
+                                 WITH `( $1 is null ) or ( $1 eq '00000000' )`
+                                 IGNORING CASE ##NO_TEXT.
+
+      " DateField is not null --> ( DateField is not null ) and ( DateField ne '00000000' )
+      lv_pcre = `(` && lv_field && `)\s*is\s*not\s*null`.
+      REPLACE ALL OCCURRENCES OF PCRE lv_pcre
+                                   IN rv_filter_string
+                                 WITH `( $1 is not null ) and ( $1 ne '00000000' )`
+                                 IGNORING CASE ##NO_TEXT.
+    ENDIF.
+  ENDLOOP.
+
+  " AlphaField eq '12345' --> AlphaField eq '0000012345'
+  LOOP AT it_fields_alpha INTO DATA(ls_alpha).
+    DATA(lv_offset) = 0.
+    DATA(lv_length) = 0.
+
+    lv_pcre = |({ ls_alpha-field }.*?)'(.*?)'|.
+
+    DO.
+      FIND FIRST OCCURRENCE OF PCRE lv_pcre
+                                 IN SECTION OFFSET lv_offset OF rv_filter_string
+                         SUBMATCHES DATA(lv_sub1) DATA(lv_sub2)
+                              MATCH OFFSET lv_offset
+                           IGNORING CASE.
+      IF sy-subrc <> 0.
+        EXIT.
+      ENDIF.
+
+      DATA(lv_with) = |$1'{ condense( |{ lv_sub2 ALPHA = IN WIDTH = ls_alpha-width }| ) }'|.
+
+      REPLACE FIRST OCCURRENCE OF PCRE lv_pcre
+                                    IN SECTION OFFSET lv_offset OF rv_filter_string
+                                  WITH lv_with
+                           REPLACEMENT LENGTH lv_length
+                              IGNORING CASE.
+      lv_offset += lv_length.
+    ENDDO.
+  ENDLOOP.
+ENDMETHOD.
+```
 
 ### ADBC и Native SQL
-```
+```abap
 TRY.
     DATA(lv_sql) = |SELECT spfli.carrid, spfli.connid|
                 && |  FROM spfli|
@@ -190,27 +274,27 @@ ENDTRY.
 ```
 
 ### Работа с HASH-значением
-Function group: ``` SECH ```
+Function group: `SECH`
 
 # Работа с Excel
-OLE: ``` zcl_edms_xls_epam_fi ```, пример использования ``` ZFICO_DOCS_UPLOAD_F01 ```, ``` upload_excel_file ```.
+OLE: `zcl_edms_xls_epam_fi`, пример использования `ZFICO_DOCS_UPLOAD_F01`, `upload_excel_file`.
 Минус: требует компьютер пользователя с Windows, могут быть проблемы при запуске из web
 Особенность: работает только с тем, что видно на экране
 
-Фон: ``` zcl_fc_excel_reader ```, пример использования: ``` ZCL_EDMS_MASS_EPAM_FI_MULTI=>PARSE_INTERNAL() ```.
+Фон: `zcl_fc_excel_reader`, пример использования: `ZCL_EDMS_MASS_EPAM_FI_MULTI=>PARSE_INTERNAL()`.
 Плюсы: можно работать в фоне, с несколькими вкладками
 Минусы: не работает с xls-форматом (старый), не позволяет определить активную вкладку, считывает всю вкладку, вне зависимости от наличия скрытых строк.
 
-Ещё есть ``` cl_xlsx_document ```, но я в ней не разобрался, нет времени.
-Пример попытки: ``` ZCL_FC_EXCEL_READER=>PREPARE ```, закомментированные строки 22-30.
+Ещё есть `cl_xlsx_document`, но я в ней не разобрался, нет времени.
+Пример попытки: `ZCL_FC_EXCEL_READER=>PREPARE`, закомментированные строки 22-30.
 
-Есть ещё abap2xls: пакет ``` ZABAP2XLSX ```.
+Есть ещё abap2xls: пакет `ZABAP2XLSX`.
 На сапборде есть xslx worbench Бородина и zwww (через олей) Parazit'а. И что-то ещё, нужно рыться.
-Ещё есть iXML, вроде бы можно заюзать совместно с ``` zcl_zip ``` (или как его там).
+Ещё есть iXML, вроде бы можно заюзать совместно с `zcl_zip` (или как его там).
 
 # Дата / время
 ### Прибавить количество секунд к дате и времени
-```
+```abap
 CALL FUNCTION 'TSTR_CALC_TIME'
   EXPORTING
     iv_begin_datelocal_req   = '2000101'
@@ -231,7 +315,7 @@ CALL FUNCTION 'TSTR_CALC_TIME'
 ```
 
 ### Последний день месяца
-```
+```abap
 CALL FUNCTION 'DATE_GET_MONTH_LASTDAY'
     EXPORTING
       i_date = sy-datum
@@ -240,7 +324,7 @@ CALL FUNCTION 'DATE_GET_MONTH_LASTDAY'
 ```
 
 ### Работа с timestamp
-```
+```abap
 GET TIME STAMP FIELD DATA(lv_ts).
 DATA: lv_timestamp TYPE timestamp.
 
@@ -255,16 +339,16 @@ CONVERT TIME STAMP lv_timestamp TIME ZONE 'UTC' INTO DATE DATA(lv_date) TIME DAT
 ```
 
 ### Классы для работы с датами
-- ``` CL_RECA_DATE ```
-- ``` CL_RECA_DATE_SLICES ```
+- `CL_RECA_DATE`
+- `CL_RECA_DATE_SLICES`
 
 # Экраны
 ### Чтение / запись данных с экрана
-- ``` DYNP_VALUES_READ ```
-- ``` DYNP_VALUES_UPDATE ```
+- `DYNP_VALUES_READ`
+- `DYNP_VALUES_UPDATE`
 
 ### F4 для поля из таблицы
-```
+```abap
 CALL FUNCTION 'F4IF_FIELD_VALUE_REQUEST'
     EXPORTING
       tabname           = 'SWOTENTRY'
@@ -280,7 +364,7 @@ CALL FUNCTION 'F4IF_FIELD_VALUE_REQUEST'
 ```
 
 ### Установить свой список значений для ListBox
-```
+```abap
 DATA: lt_vrm_values TYPE vrm_values,
 ls_vrm_values LIKE LINE OF lt_vrm_values.
 
@@ -303,10 +387,10 @@ CALL FUNCTION 'VRM_SET_VALUES'
 
 # ALV
 ### Разворачивание ALV на полный экран
-Программа ``` ZDF_FIND_CARD_999011 ```, ``` FORM init_alv ```
+Программа `ZDF_FIND_CARD_999011`, `FORM init_alv`
 
 ### Простой вывод в ALV (1)
-```
+```abap
 DATA: lr_alv TYPE REF TO cl_salv_table,
       lr_functions TYPE REF TO cl_salv_functions_list.
 
@@ -320,7 +404,7 @@ lr_alv->display( ).
 ```
 
 ### Простой вывод в ALV (2)
-```
+```abap
 DATA(lo_ida) = cl_salv_gui_table_ida=>create( iv_table_name = 'ZTVLT_CRDNTL' ).
 
 lo_ida->field_catalog( )->get_available_fields( IMPORTING ets_field_names = DATA(lt_fc) ).
@@ -331,11 +415,11 @@ lo_ida->fullscreen( )->display( ).
 ```
 
 ### Сброс буфера ALV-таблиц для всех системы
-Программа ``` BALVBUFDEL ```
+Программа `BALVBUFDEL`
 
 # Классы
 ### Вызов исключений
-```
+```abap
 TRY.
     DATA(lv_uuid) = cl_uuid_factory=>create_system_uuid( )->create_uuid_x16( ).
   CATCH cx_uuid_error INTO DATA(lo_uuid_error).
@@ -349,7 +433,7 @@ ENDTRY.
 
 # Новый синтаксис
 ### Обход таблицы по группировкам
-```
+```abap
 LOOP AT lt_data INTO DATA(ls_data)
          GROUP BY ( lifnr   = ls_data-lifnr
                     kunnr   = ls_data-kunnr
@@ -366,7 +450,7 @@ ENDLOOP.
 ```
 
 ### Добавление строк в таблицу
-```
+```abap
 ls_cdata = CORRESPONDING #( BASE ( ls_cdata ) <lfs_contract> 
      MAPPING sap_contract_n = doknr
   	           type = cn_type
@@ -376,12 +460,12 @@ lt_custcontr = CORRESPONDING #( BASE ( lt_vendcontr ) lt_cdata ).
 ```
 
 ### Простое alpha-преобразование
-```
+```abap
 lv_kunnr = |{ gs_debitor-kunnr ALPHA = OUT }|.
 ```
 
 ### Работа с циклом FOR
-```
+```abap
 gt_output = VALUE #( FOR <ls_initial_data> IN gt_initial_data ( fill_line( <ls_initial_data> ) ) ) .
 
 DATA(ltr_matnr) = VALUE range_t_matnr( FOR <ls_bom_preview> IN lt_bom_preview_tab
@@ -393,14 +477,14 @@ DATA(lt_mseg_anla2) = VALUE ty_mseg( FOR ls_mseg IN gt_mseg WHERE ( anln1 IS NOT
 ```
 
 ### Проверка наличия значения в таблице
-```
+```abap
 IF line_exists( lt_dfs_filedata[ doctype = gc_doctype_51 ] ).
   CONTINUE.
 ENDIF.
 ```
 
 ### Условие
-```
+```abap
 <ls_data>-new_site = COND #( WHEN <ls_data>-cn_beg_date >= s_repdat-low THEN abap_true
                                                                         ELSE abap_false ).
 
@@ -415,71 +499,71 @@ DATA(addrnumber) = SWITCH #( <ls_data>-zzre_obj_one_sid
 ```
 
 ### Расчет суммы по колонке таблицы
-```
+```abap
 DATA: itab TYPE TABLE OF i WITH EMPTY KEY.
 itab = VALUE #( FOR j = 1 WHILE j <= 10 ( j ) ).
 DATA(sum) = REDUCE i( INIT x = 0 FOR wa IN itab NEXT x = x + wa ).
 ```
 
 ### Создание булевой переменной
-```
+```abap
 DATA(result) = xsdbool( is_filled  = abap_true AND
                         is_working = abap_true ).
 ```
 
 # Прочее
 ### ABAP DEMO package
-``` SABAPDEMOS ```
+`SABAPDEMOS`
 
 ### ABAP Git
-``` ZABAPGIT_STANDALONE ```
+`ZABAPGIT_STANDALONE`
 
 ### FICO common packages
-- ``` ZFICO_BC ```
-- ``` ZLIB ```
+- `ZFICO_BC`
+- `ZLIB`
 
 ### Редактирование таблиц в продуктиве
-- ``` ZRK_SE16N ``` – редактирование таблиц в продуктиве
-- ``` SE37 ``` - FM ``` SE16N_INTERFACE ```
+- `ZRK_SE16N` – редактирование таблиц в продуктиве
+- `SE37` - FM `SE16N_INTERFACE`
 
 ### Печатные формы OAER, ZOAER
-Функциональный модуль: ``` Z_OUT_DOT ```, ``` Z_OUT_XLS ```
+**Функциональный модуль:** `Z_OUT_DOT`, `Z_OUT_XLS`
 
-- Приложение: ``` kappl ```
-- Документ:   ``` kschl ```
+- Приложение: `kappl`
+- Документ:   `kschl`
 
-Транзакция редактирования: ``` ZOAER ```
+**Транзакция редактирования:** `ZOAER`
 
-Транзакция создания видов выходных документов: ``` NACT ``` (``` NACE ```)
-- Имя класса: ``` classname ```
-- Тип класса: ``` classtype ```
-- Ключ объекта: ``` object_key ```
+**Транзакция создания видов выходных документов:** `NACT` (`NACE`)
+- Имя класса: `classname`
+- Тип класса: `classtype`
+- Ключ объекта: `object_key`
 
-Транзакция редактирования: ``` OAER ```
+**Транзакция редактирования:** `OAER`
 
-Создание нового класса: тр. ``` SBDSV1 ```
+**Создание нового класса:** тр. `SBDSV1`
 
 ### Поиск во всех текстах
-- Программа ``` RS_ABAP_SOURCE_SCAN ```
-- Транзакция ``` CODE_SCANNER ```
+- Программа `RS_ABAP_SOURCE_SCAN`
+- Транзакция `CODE_SCANNER`
 
 ### Отладка фоновых заданий
-``` jdbg ```
+`jdbg`
 
 ### Отладка под другим пользователем
 1.	Пользователь, который совершает отладку, должен установить точку останова под другим пользователем.
    
     ![External user debugging](../assets/images/ext-user-debugging.png)
 
-2.	Пользователь, под которым происходит отладка, запускает команду ``` /hext user = EXTUSERNAME ```.
+2.	Пользователь, под которым происходит отладка, запускает команду `/hext user = EXTUSERNAME`.
 
 ### Создание системных вариантов
-- ``` CUS& ``` - пользовательские транзакции
-- ``` SAP& ``` - страндартные транзакции
+- `CUS&` - пользовательские транзакции
+- `SAP&` - страндартные транзакции
 
 ### Работа с командами операционной системы
-Создание команды – тр. ``` SM69 ```
-```
+Создание команды – тр. `SM69`
+```abap
 CALL 'C_SAPGPARAM' ID 'NAME'  FIELD 'SAPDBHOST'
                    ID 'VALUE' FIELD  lv_param.
 
@@ -521,20 +605,20 @@ ENDLOOP.
 ### Добавление EXTENSION в ФМ BAPI_ACC_DOCUMENT_POST
 FIBF – Параметры настройки – Модули процесса клиента
 
-Процесс ``` RWBAPI01 ```
+Процесс `RWBAPI01`
 
 ### Массовая активация CDS
-Program ``` RUTDDLSACT ```
+Program `RUTDDLSACT`
 
 ### Массовая проверка синтаксиса
-T-code ``` REDSRS01 ```
+T-code `REDSRS01`
 
 # OData
 Преобразование Filter string в select-options
-``` CL_CLB2_TOOLS=>ODATA_FILTER2SELECT_OPTION ```
+`CL_CLB2_TOOLS=>ODATA_FILTER2SELECT_OPTION`
 
 Преобразование select-options в WHERE-condition
-```
+```abap
 CALL FUNCTION 'SE16N_CREATE_SELTAB'
     TABLES
       lt_sel   = gt_sel
