@@ -1,6 +1,6 @@
 # ABAP Unit-test example
 
-```
+```abap
 CLASS ltcl_gdpr_obfuscation DEFINITION FOR TESTING
   RISK LEVEL HARMLESS
   DURATION SHORT.
