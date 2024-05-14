@@ -30,7 +30,7 @@ CLASS cl_gui_frontend_services DEFINITION LOAD.
 `CL_ABAP_CHAR_UTILITIES=>CR_LF`
 ```abap
 DATA: lv_c_nbcp TYPE c. 
-lv_c_nbsp = cl_abap_conv_in_ce=>uccp( '00A0' ). “неразрывный пробел
+lv_c_nbsp = cl_abap_conv_in_ce=>uccp( '00A0' ). "non-breaking space
 
 IF cl_abap_matcher=>matches( pattern = '\d{23}'
                                 text = l_string ) = abap_true.
