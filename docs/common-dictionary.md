@@ -276,6 +276,9 @@ ENDTRY.
 ### Работа с HASH-значением
 Function group: `SECH`
 
+### Работа с GUID (UUID)
+Class: `CL_SYSTEM_UUID`
+
 # Работа с Excel
 OLE: `zcl_edms_xls_epam_fi`, пример использования `ZFICO_DOCS_UPLOAD_F01`, `upload_excel_file`.
 Минус: требует компьютер пользователя с Windows, могут быть проблемы при запуске из web
