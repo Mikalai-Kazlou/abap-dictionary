@@ -1,6 +1,3 @@
-# ABAP Unit-test example
-
-```abap
 CLASS ltcl_gdpr_obfuscation DEFINITION FOR TESTING
   RISK LEVEL HARMLESS
   DURATION SHORT.
@@ -284,4 +281,3 @@ CLASS ltcl_gdpr_obfuscation IMPLEMENTATION.
     cl_abap_unit_assert=>fail( ).
   ENDMETHOD.
 ENDCLASS.
-```
