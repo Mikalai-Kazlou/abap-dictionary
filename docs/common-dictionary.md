@@ -276,6 +276,26 @@ ENDTRY.
 ### Работа с HASH-значением
 Function group: `SECH`
 
+### Error raising in OData service
+```abap
+/iwbep/if_mgw_conv_srv_runtime~get_message_container( )->add_message_text_only(
+                                                          iv_msg_type = if_msg_output=>msgtype_error
+                                                          iv_msg_text = text-e01 ).
+" Raising Exception
+RAISE EXCEPTION TYPE /iwbep/cx_mgw_busi_exception
+  EXPORTING
+    textid            = /iwbep/cx_mgw_busi_exception=>business_error
+    message_container = /iwbep/if_mgw_conv_srv_runtime~get_message_container( )
+    http_status_code  = CONV #( if_http_status=>reason_400 ).
+```          
+
+### Dynamic programming
+Command `SYNTAX-CHECK`
+Class `CL_ABAP_DYN_PRG`
+
+### Virus scan
+Class `CL_VSI`
+
 # Работа с Excel
 OLE: `zcl_edms_xls_epam_fi`, пример использования `ZFICO_DOCS_UPLOAD_F01`, `upload_excel_file`.
 Минус: требует компьютер пользователя с Windows, могут быть проблемы при запуске из web
@@ -613,11 +633,80 @@ Program `RUTDDLSACT`
 ### Массовая проверка синтаксиса
 T-code `REDSRS01`
 
+### Изменение цветов в Smartform’е (PDF)
+```abap
+DATA(control_param) = VALUE ssfctrlop( no_dialog = abap_true
+                                          getotf = abap_true ).
+
+DATA(output_options) = VALUE ssfcompop( tdprinter = 'PDF1' ).
+
+CALL FUNCTION fm_name
+  EXPORTING
+    control_parameters = control_param
+    output_options     = output_options
+    order_data         = im_s_sales_order
+  IMPORTING
+    job_output_info    = job_out
+  EXCEPTIONS
+    formatting_error   = 1
+    internal_error     = 2
+    send_error         = 3
+    user_canceled      = 4
+    OTHERS             = 5.
+
+lt_otf = job_out-otfdata.
+
+LOOP AT lt_otf ASSIGNING FIELD-SYMBOL(<ls_otf>) WHERE tdprintcom = 'CT' OR tdprintcom = 'CB'.
+  "Change caption text and section title background colors
+  IF <ls_otf>-tdprintpar = '7DA6CF00'.
+    <ls_otf>-tdprintpar = '3052A200'.
+  ENDIF.
+
+  "Change regular text color
+  IF <ls_otf>-tdprintpar = '00000000' AND <ls_otf>-tdprintcom = 'CT'.
+    <ls_otf>-tdprintpar = '00003100'.
+  ENDIF.
+
+  "Change frame color
+  IF <ls_otf>-tdprintpar = 'ABC7DE00' AND <ls_otf>-tdprintcom = 'CB'.
+    <ls_otf>-tdprintpar = 'EAEEF600'.
+  ENDIF.
+
+  "Change input fields color
+  IF <ls_otf>-tdprintpar = 'D4D4D400' AND <ls_otf>-tdprintcom = 'CB'.
+    <ls_otf>-tdprintpar = 'EAEEF600'.
+  ENDIF.
+
+  "Change logo colors
+  IF <ls_otf>-tdprintpar = '1535FF00' AND <ls_otf>-tdprintcom = 'CT'.
+    <ls_otf>-tdprintpar = '103F6B00'.
+  ENDIF.
+  IF <ls_otf>-tdprintpar = '1589FF00' AND <ls_otf>-tdprintcom = 'CT'.
+    <ls_otf>-tdprintpar = '63B5E500'.
+  ENDIF.
+ENDLOOP.
+
+CALL FUNCTION 'CONVERT_OTF'
+  EXPORTING
+    format                = 'PDF'          " Target format for LINES table
+  IMPORTING
+    bin_file              = re_v_xstring_pdf
+  TABLES
+    otf                   = lt_otf         " Input table with OTF format
+    lines                 = lines          " Output table with target format
+  EXCEPTIONS
+    err_max_linewidth     = 1              " Line width must be between 2 and 132
+    err_format            = 2              " Format not supported
+    err_conv_not_possible = 3              " Conversion not possible/supported
+    err_bad_otf           = 4
+    OTHERS                = 5.
+```
+
 # OData
-Преобразование Filter string в select-options
+### Преобразование Filter string в select-options
 `CL_CLB2_TOOLS=>ODATA_FILTER2SELECT_OPTION`
 
-Преобразование select-options в WHERE-condition
+### Преобразование select-options в WHERE-condition
 ```abap
 CALL FUNCTION 'SE16N_CREATE_SELTAB'
     TABLES
@@ -627,4 +716,4 @@ CALL FUNCTION 'SE16N_CREATE_SELTAB'
 
 # UI5
 ### Загрузка / выгрузка репозитория
-Program ``` /UI5/UI5_REPOSITORY_LOAD ```
+Program `/UI5/UI5_REPOSITORY_LOAD`

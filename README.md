@@ -15,6 +15,9 @@
 - [Регулярные выражения](/docs/common-dictionary.md#регулярные-выражения)
 - [ADBC и Native SQL](/docs/common-dictionary.md#adbc-и-native-sql)
 - [Работа с HASH-значением](/docs/common-dictionary.md#работа-с-hash-значением)
+- [Error raising in OData service](/docs/common-dictionary.md#error-raising-in-odata-service)
+- [Dynamic programming](/docs/common-dictionary.md#dynamic-programming)
+- [Virus scan](/docs/common-dictionary.md#virus-scan)
 
 ## [Работа с Excel](/docs/common-dictionary.md#работа-с-excel)
 
@@ -62,8 +65,11 @@
 - [Добавление EXTENSION в ФМ BAPI_ACC_DOCUMENT_POST](/docs/common-dictionary.md#добавление-extension-в-фм-bapi_acc_document_post)
 - [Массовая активация CDS](/docs/common-dictionary.md#массовая-активация-cds)
 - [Массовая проверка синтаксиса](/docs/common-dictionary.md#массовая-проверка-синтаксиса)
+- [Изменение цветов в Smartform’е (PDF)](/docs/common-dictionary.md#изменение-цветов-в-smartformе-pdf)
 
 ## [OData](/docs/common-dictionary.md#odata)
+- [Преобразование Filter string в select-options](/docs/common-dictionary.md#преобразование-filter-string-в-select-options)
+- [Преобразование select-options в WHERE-condition](/docs/common-dictionary.md#преобразование-select-options-в-where-condition)
 
 ## [UI5](/docs/common-dictionary.md#ui5)
 - [Загрузка / выгрузка репозитория](/docs/common-dictionary.md#загрузка--выгрузка-репозитория)
