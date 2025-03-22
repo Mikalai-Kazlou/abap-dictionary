@@ -17,10 +17,6 @@
 - [Работа с HASH-значением](/docs/common-dictionary.md#работа-с-hash-значением)
 
 ## [Работа с Excel](/docs/common-dictionary.md#работа-с-excel)
-- [OLE: zcl_edms_xls_epam_fi](/docs/common-dictionary.md#ole-zcl_edms_xls_epam_fi)
-- [Фон: zcl_fc_excel_reader](/docs/common-dictionary.md#фон-zcl_fc_excel_reader)
-- [Класс cl_xlsx_document](/docs/common-dictionary.md#класс-cl_xlsx_document)
-- [Пакет abap2xls](/docs/common-dictionary.md#пакет-abap2xls)
 
 ## [Дата / время](/docs/common-dictionary.md#дата--время)
 - [Прибавить количество секунд к дате и времени](/docs/common-dictionary.md#прибавить-количество-секунд-к-дате-и-времени)
@@ -68,8 +64,6 @@
 - [Массовая проверка синтаксиса](/docs/common-dictionary.md#массовая-проверка-синтаксиса)
 
 ## [OData](/docs/common-dictionary.md#odata)
-- [Преобразование Filter string в select-options](/docs/common-dictionary.md#преобразование-filter-string-в-select-options)
-- [Преобразование select-options в WHERE-condition](/docs/common-dictionary.md#преобразование-select-options-в-where-condition)
 
 ## [UI5](/docs/common-dictionary.md#ui5)
 - [Загрузка / выгрузка репозитория](/docs/common-dictionary.md#загрузка--выгрузка-репозитория)
