@@ -26,6 +26,9 @@ CLASS cl_gui_frontend_services DEFINITION LOAD.
 ### Утилиты для HTTP
 Класс: `CL_HTTP_UTILITY`
 
+### Константы для message types
+Интерфейс: `IF_XO_CONST_MESSAGE`
+
 ### Строковые переменные
 `CL_ABAP_CHAR_UTILITIES=>CR_LF`
 ```abap
