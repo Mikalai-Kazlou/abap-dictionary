@@ -302,6 +302,13 @@ Class `CL_ABAP_DYN_PRG`
 ### Virus scan
 Class `CL_VSI`
 
+### Progress indicator
+```abap
+cl_progress_indicator=>progress_indicate(
+    i_text = |Processing: { current_record }/{ total_records }|
+    i_output_immediately = abap_true ).
+```    
+
 # Работа с Excel
 OLE: `zcl_edms_xls_epam_fi`, пример использования `ZFICO_DOCS_UPLOAD_F01`, `upload_excel_file`.
 Минус: требует компьютер пользователя с Windows, могут быть проблемы при запуске из web

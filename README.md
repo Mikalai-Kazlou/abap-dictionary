@@ -20,6 +20,7 @@
 - [Error raising in OData service](/docs/common-dictionary.md#error-raising-in-odata-service)
 - [Dynamic programming](/docs/common-dictionary.md#dynamic-programming)
 - [Virus scan](/docs/common-dictionary.md#virus-scan)
+- [Progress indicator](/docs/common-dictionary.md#progress-indicator)
 
 ## [Работа с Excel](/docs/common-dictionary.md#работа-с-excel)
 
