@@ -3,6 +3,7 @@
 - [Работа с фронтэндом](/docs/common-dictionary.md#работа-с-фронтэндом)
 - [Работа с ZIP-архивами](/docs/common-dictionary.md#работа-с-zip-архивами)
 - [Утилиты для HTTP](/docs/common-dictionary.md#утилиты-для-http)
+- [HTTP-client](/docs/common-dictionary.md#http-client)
 - [Константы для message types](/docs/common-dictionary.md#константы-для-message-types)
 - [Строковые переменные](/docs/common-dictionary.md#строковые-переменные)
 - [Красивый вывод сообщений](/docs/common-dictionary.md#красивый-вывод-сообщений)

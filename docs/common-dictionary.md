@@ -26,6 +26,147 @@ CLASS cl_gui_frontend_services DEFINITION LOAD.
 ### Утилиты для HTTP
 Класс: `CL_HTTP_UTILITY`
 
+### HTTP-client
+```abap
+DATA: lv_message_v1 TYPE symsgv,
+      lv_message_v2 TYPE symsgv,
+      lv_message_v3 TYPE symsgv,
+      lv_message_v4 TYPE symsgv.
+
+cl_http_client=>create_by_destination(
+  EXPORTING
+    destination              = mc_destination
+  IMPORTING
+    client                   = DATA(lo_client)
+  EXCEPTIONS
+    argument_not_found       = 1                                      " Connection Parameter (Destination) Not Available
+    destination_not_found    = 2                                      " Destination not found
+    destination_no_authority = 3                                      " No Authorization to Use HTTP Destination
+    plugin_not_active        = 4                                      " HTTP/HTTPS communication not available
+    internal_error           = 5                                      " Internal error (e.g. name too long)
+    OTHERS                   = 6 ).
+
+IF sy-subrc <> 0.
+  IF 1 = 2. MESSAGE e003(zsd_dtp_common). ENDIF.
+  APPEND VALUE #( type       = mc_message-error
+                  id         = mc_message-zsd_dtp_common_id
+                  number     = '003' )                                " Failed to create http-client by destination.
+                  TO ct_messages.
+  APPEND is_nast TO ct_failed.
+  RETURN.
+ENDIF.
+
+LOOP AT is_nast-data_event ASSIGNING FIELD-SYMBOL(<fs_data_event>) WHERE document_content IS NOT INITIAL.
+  lo_client->request->set_method( if_http_request=>co_request_method_post ).
+  lo_client->request->set_content_type( content_type = 'application/json' ).
+
+  DATA(lv_body_request) = /ui2/cl_json=>serialize(
+        data        = VALUE ts_body_request( root-data_event = <fs_data_event> )
+        compress    = abap_true
+        pretty_name = /ui2/cl_json=>pretty_mode-low_case ).
+
+  lo_client->request->set_cdata( data = lv_body_request ).
+
+  lo_client->send(
+    EXCEPTIONS
+      http_communication_failure = 1                                    " Communication Error
+      http_invalid_state         = 2                                    " Invalid state
+      http_processing_failed     = 3                                    " Error when processing method
+      http_invalid_timeout       = 4                                    " Invalid Time Entry
+      OTHERS                     = 5 ).
+
+  IF sy-subrc <> 0.
+    IF 1 = 2. MESSAGE e004(zsd_dtp_common). ENDIF.
+    APPEND VALUE #( type       = mc_message-error
+                    id         = mc_message-zsd_dtp_common_id
+                    number     = '004' )                                " Failed to send request.
+                    TO ct_messages.
+    APPEND is_nast TO ct_failed.
+    RETURN.
+  ENDIF.
+
+  lo_client->receive(
+    EXCEPTIONS
+      http_communication_failure = 1                                    " Communication Error
+      http_invalid_state         = 2                                    " Invalid state
+      http_processing_failed     = 3                                    " Error when processing method
+      OTHERS                     = 4  ).
+
+  IF sy-subrc <> 0.
+    IF 1 = 2. MESSAGE e005(zsd_dtp_common). ENDIF.
+    APPEND VALUE #( type       = mc_message-error
+                    id         = mc_message-zsd_dtp_common_id
+                    number     = '005' )                                " Failed to receive response.
+                    TO ct_messages.
+    APPEND is_nast TO ct_failed.
+    RETURN.
+  ENDIF.
+
+  lo_client->response->get_status(
+    IMPORTING
+      code   = DATA(lv_status)
+      reason = DATA(lv_reason) ).
+
+  IF 1 = 2. MESSAGE i006(zsd_dtp_common). ENDIF.
+  APPEND VALUE #( type       = mc_message-info
+                  id         = mc_message-zsd_dtp_common_id
+                  number     = '006'                                   " Status code: &1 - &2.
+                  message_v1 = condense( CONV string( lv_status ) )
+                  message_v2 = lv_reason )
+                  TO ct_messages.
+
+  DATA(lv_body_response) = lo_client->response->get_cdata( ).
+
+  IF lv_status <> cl_rest_status_code=>gc_success_ok.
+    lo_client->get_last_error(
+      IMPORTING
+        code    = DATA(lv_code)
+        message = DATA(lv_message) ).
+
+    IF lv_code IS NOT INITIAL.
+      IF 1 = 2. MESSAGE e007(zsd_dtp_common). ENDIF.
+      APPEND VALUE #( type       = mc_message-error
+                      id         = mc_message-zsd_dtp_common_id
+                      number     = '007'                                " Error code: &1 - &2.
+                      message_v1 = lv_code
+                      message_v2 = lv_message )
+                      TO ct_messages.
+    ENDIF.
+
+    IF lv_body_response IS NOT INITIAL.
+      TRY.
+          lv_message_v1 = lv_body_response.
+          lv_message_v2 = lv_body_response+50.
+          lv_message_v3 = lv_body_response+100.
+          lv_message_v4 = lv_body_response+150.
+        CATCH cx_sy_range_out_of_bounds.
+      ENDTRY.
+
+      IF strlen( lv_message_v4 ) = 50.
+        lv_message_v4 = lv_message_v4(47) && '...'.
+      ENDIF.
+
+      IF 1 = 2. MESSAGE e000(zsd_dtp_common). ENDIF.
+      APPEND VALUE #( type       = mc_message-error
+                      id         = mc_message-zsd_dtp_common_id
+                      number     = '000'
+                      message_v1 = lv_message_v1
+                      message_v2 = lv_message_v2
+                      message_v3 = lv_message_v3
+                      message_v4 = lv_message_v4 )
+                      TO ct_messages.
+    ENDIF.
+
+    " Agreement with KGS Team:
+    " There may be correctly processed messages with 500 status code, e.g.
+    " when sending duplicate messages
+    IF lv_status <> cl_rest_status_code=>gc_server_error_internal.
+      APPEND is_nast TO ct_failed.
+    ENDIF.
+  ENDIF.
+ENDLOOP.
+```
+
 ### Константы для message types
 Интерфейс: `IF_XO_CONST_MESSAGE`
 
