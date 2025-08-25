@@ -22,6 +22,7 @@
 - [Dynamic programming](/docs/common-dictionary.md#dynamic-programming)
 - [Virus scan](/docs/common-dictionary.md#virus-scan)
 - [Progress indicator](/docs/common-dictionary.md#progress-indicator)
+- [Standard exception classes](/docs/common-dictionary.md#standard-exception-classes)
 
 ## [Работа с Excel](/docs/common-dictionary.md#работа-с-excel)
 

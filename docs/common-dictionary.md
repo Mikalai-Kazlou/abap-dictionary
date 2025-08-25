@@ -448,7 +448,11 @@ Class `CL_VSI`
 cl_progress_indicator=>progress_indicate(
     i_text = |Processing: { current_record }/{ total_records }|
     i_output_immediately = abap_true ).
-```    
+```
+
+### Standard exception classes
+`cx_sy_arithmetic_overflow`
+`cx_sy_zerodivide`
 
 # Работа с Excel
 OLE: `zcl_edms_xls_epam_fi`, пример использования `ZFICO_DOCS_UPLOAD_F01`, `upload_excel_file`.
