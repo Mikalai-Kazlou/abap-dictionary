@@ -437,8 +437,8 @@ RAISE EXCEPTION TYPE /iwbep/cx_mgw_busi_exception
 ```          
 
 ### Dynamic programming
-Command `SYNTAX-CHECK`
-Class `CL_ABAP_DYN_PRG`
+- Command `SYNTAX-CHECK`
+- Class `CL_ABAP_DYN_PRG`
 
 ### Virus scan
 Class `CL_VSI`
@@ -449,10 +449,6 @@ cl_progress_indicator=>progress_indicate(
     i_text = |Processing: { current_record }/{ total_records }|
     i_output_immediately = abap_true ).
 ```
-
-### Standard exception classes
-`cx_sy_arithmetic_overflow`
-`cx_sy_zerodivide`
 
 # Работа с Excel
 OLE: `zcl_edms_xls_epam_fi`, пример использования `ZFICO_DOCS_UPLOAD_F01`, `upload_excel_file`.
@@ -607,6 +603,27 @@ TRY.
         previous          = lo_uuid_error
         message_unlimited = lo_uuid_error->get_longtext( ).
 ENDTRY.
+```
+
+### Standard exception classes
+- `cx_root`
+  - `cx_sy_arithmetic_error`
+    - `cx_sy_arithmetic_overflow`
+    - `cx_sy_zerodivide`
+  - `cx_abap_invalid_value`  
+  - `cx_abap_auth_check_exception` 
+  - `cx_static_check` 
+  - `cx_dynamic_check` 
+  - `cx_no_check` 
+
+```abap
+RAISE EXCEPTION TYPE cx_abap_invalid_value
+  EXPORTING
+    value = CONV #( i_carrier_id ).
+
+RAISE EXCEPTION TYPE cx_abap_auth_check_exception
+  EXPORTING
+    textid = cx_abap_auth_check_exception=>missing_authorization.
 ```
 
 # Новый синтаксис
