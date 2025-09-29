@@ -610,6 +610,7 @@ ENDTRY.
   - `cx_sy_arithmetic_error`
     - `cx_sy_arithmetic_overflow`
     - `cx_sy_zerodivide`
+  - `cx_sy_itab_line_not_found` 
   - `cx_abap_invalid_value`  
   - `cx_abap_auth_check_exception` 
   - `cx_static_check` 
