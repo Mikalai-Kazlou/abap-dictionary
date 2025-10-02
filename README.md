@@ -1,5 +1,5 @@
-## [Полезные ФМ, группы функций, классы](/docs/common-dictionary.md#полезные-фм-группы-функций-классы)
-- [Отображение BAL-лога](/docs/common-dictionary.md#отображение-bal-лога)
+## [Useful FMs, function groups, classes](/docs/common-dictionary.md#useful-fms-function-groups-classes)
+- [Working with BAL (Business Application Log)](/docs/common-dictionary.md#working-with-bal-business-application-log)
 - [Работа с фронтэндом](/docs/common-dictionary.md#работа-с-фронтэндом)
 - [Работа с ZIP-архивами](/docs/common-dictionary.md#работа-с-zip-архивами)
 - [Утилиты для HTTP](/docs/common-dictionary.md#утилиты-для-http)
