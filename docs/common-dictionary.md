@@ -599,8 +599,7 @@ CONVERT TIME STAMP lv_timestamp TIME ZONE 'UTC' INTO DATE DATA(lv_date) TIME DAT
 ```
 
 ### Классы для работы с датами
-- `CL_RECA_DATE`
-- `CL_RECA_DATE_SLICES`
+- `CL_ABAP_DATFM`
 
 # Экраны
 ### Чтение / запись данных с экрана
